@@ -1,5 +1,6 @@
+#LE INDICAMOS UN PUERTO ALEATORIO DISPONIBLE
 server:
-  port: 8003
+  port: ${PORT:${SERVER_PORT:0}}
 
 #REGISTRAMOS ESTE SERVICIO EN EUREKA
 eureka:
@@ -9,4 +10,4 @@ eureka:
    service-url:
      default-zone: http://localhost:8761/eureka
    instance:
-     hostname: localhost
+     instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
