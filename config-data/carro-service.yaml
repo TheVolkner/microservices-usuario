@@ -2,6 +2,7 @@ server:
   port: 8002
 
 #REGISTRAMOS ESTE SERVICIO EN EUREKA
+eureka:
  client:
    fetch-registry: true
    register-with-eureka: true
