@@ -1,0 +1,35 @@
+#LE INDICAMOS UN PUERTO ALEATORIO DISPONIBLE
+server:
+  port: 8080
+
+#REGISTRAMOS ESTE SERVICIO EN EUREKA
+eureka:
+ client:
+   fetch-registry: true
+   register-with-eureka: true
+   service-url:
+     default-zone: http://localhost:8761/eureka
+   instance:
+     hostname: localhost
+
+#INDICAMOS LA CONFIGURACIÓN PARA EL GATEWAY
+spring:
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+      routes: 
+        - id: usuario-service
+          uri: lb://usuario-service 
+          predicates: 
+            - Path=/api/usuarios/**
+        - id: carro-service
+          uri: lb://carro-service 
+          predicates: 
+            - Path=/api/carro/**      
+        - id: moto-service
+          uri: lb://moto-service 
+          predicates: 
+            - Path=/api/moto/**            
+
