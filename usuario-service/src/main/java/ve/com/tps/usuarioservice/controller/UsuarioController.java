@@ -110,8 +110,9 @@ public class UsuarioController {
     //ESTE CONTROLADOR SE COMUNICARÁ CON EL SERVICE Y CON EL REST TEMPLATE PARA SOLICITAR LOS CARROS AL SERVICIO CORRESPONDIENTE
 
     //AGREGAMOS EL CIRCUIT BREAKER A CADA PETICIÓN DONDE LLAMEMOS A OTOR SERVICIO
-    @GetMapping("/carros/{id}")
     @CircuitBreaker(name="carrosCB", fallbackMethod = "fallbackGetCarros")
+    @GetMapping("/carros/{id}")
+
     public ResponseEntity<List<Carro>> listarCarrosPorId(@PathVariable Integer id){
 
         Usuario uFound = usuarioService.buscarUsuarioPorId(id);
@@ -131,8 +132,9 @@ public class UsuarioController {
 
     //ESTE CONTROLADOR FUNCIONARÁ IGUAL QUE EL DE CARROS PARA SOLICITAR LAS MOTOS AL SERVICIO
     //AGREGAMOS EL CIRCUIT BREAKER A CADA PETICIÓN DONDE LLAMEMOS A OTOR SERVICIO
-    @GetMapping("/motos/{id}")
     @CircuitBreaker(name="motosCB",fallbackMethod = "fallbackGetMotos")
+    @GetMapping("/motos/{id}")
+
     public ResponseEntity<List<Moto>> listarMotosPorId(@PathVariable Integer id){
 
         Usuario uFound = usuarioService.buscarUsuarioPorId(id);
@@ -152,8 +154,8 @@ public class UsuarioController {
 
     //GUARDAR UN CARRO SEGÚN EL ID DEL USUARIO
     //AGREGAMOS EL CIRCUIT BREAKER A CADA PETICIÓN DONDE LLAMEMOS A OTOR SERVICIO
-    @PostMapping("/carro/agregar/{id}")
     @CircuitBreaker(name="carrosCB", fallbackMethod = "fallbackSaveCarro")
+    @PostMapping("/carro/agregar/{id}")
     public ResponseEntity<Carro> guardarCarro(@PathVariable Integer id, @RequestBody Carro c){
 
             Carro cSaved = usuarioService.guardarCarro(c,id);
@@ -170,8 +172,9 @@ public class UsuarioController {
 
     //GUARDAR UNA MOTO SEGÚN EL ID DEL USUARIO
     //AGREGAMOS EL CIRCUIT BREAKER A CADA PETICIÓN DONDE LLAMEMOS A OTOR SERVICIO
-    @PostMapping("/moto/agregar/{id}")
     @CircuitBreaker(name="motosCB",fallbackMethod = "fallbackSaveMoto")
+    @PostMapping("/moto/agregar/{id}")
+
     public ResponseEntity<Moto> guardarMoto(@PathVariable Integer id, @RequestBody Moto m){
 
         Moto mSaved = usuarioService.guardarMoto(m,id);
@@ -187,8 +190,8 @@ public class UsuarioController {
     }
 
     //AGREGAMOS EL CIRCUIT BREAKER A CADA PETICIÓN DONDE LLAMEMOS A OTOR SERVICIO
-    @GetMapping("/vehiculos/{id}")
     @CircuitBreaker(name="vehiculosCB",fallbackMethod = "fallbackGetVehiculos")
+    @GetMapping("/vehiculos/{id}")
     public ResponseEntity<Map<String, Object>> listarVehiculosDelUsuario(@PathVariable Integer id){
 
         Map<String,Object> datos = usuarioService.obtenerUsuarioYVehiculos(id);

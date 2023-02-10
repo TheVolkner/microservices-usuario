@@ -13,7 +13,7 @@ import java.util.List;
 //HACEMOS UNA CLASE LA CÚAL ESTARÁ ENCARGAD DE SER EL FEIGN CLIENT PARA EL SERVICIO DE MOTO
 //LE INDICAMOS UN NOMBRE Y EL PATH BASE PARA HACER LAS PETICIONES, JUNTO CON EL REQUEST MAPPING PARA
 //INDICAR EL NOMBRE DE LA API
-@FeignClient(name = "moto-service" , url="http://localhost:8003" , path = "/api/moto")
+@FeignClient(name = "moto-service", path = "/api/moto")
 public interface MotoFeignClient {
 
     @PostMapping("/agregar")
