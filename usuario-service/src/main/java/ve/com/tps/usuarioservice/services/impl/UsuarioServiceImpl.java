@@ -64,10 +64,10 @@ public class UsuarioServiceImpl implements UsuarioService {
         usuarioRepository.delete(u);
     }
 
-    //UTILIZAMOS EL REST TEMPLATE PARA COMUNICARNOS CON EL SERVICIO DE CARRO Y SOLICITAMOS LOS CARROS DEL USUARIO A SU CONTROLADOR
+    //UTILIZAMOS EL REST TEMPLATE PARA LISTAR LOS CARROS DEL USUARIO SEGÚN SU ID
     @Override
     public List<Carro> listarCarros(Integer id) {
-        List<Carro> carros = restTemplate.getForObject("http://localhost:8002/api/carro/usuario/" + id.toString(),List.class);
+        List<Carro> carros = carroFeignClient.listarCarros(id);
         if(carros != null && !carros.isEmpty()){
 
             return carros;
@@ -94,10 +94,10 @@ public class UsuarioServiceImpl implements UsuarioService {
     }
 
 
-    //UTILIZAMOS EL REST TEMPLATE PARA COMUNICARNOS CON EL SERVICIO DE MOTO Y SOLICITAMOS LAS MOTOS DEL USUARIO A SU CONTROLADOR
+    //UTILIZAMOS FEIGN CLIENT PARA LISTAR LAS MOTOS
     @Override
     public List<Moto> listarMotos(Integer id) {
-        List<Moto> motos = restTemplate.getForObject("http://localhost:8003/api/moto/usuario/" + id.toString(),List.class);
+        List<Moto> motos = motoFeignClient.listarMotos(id);
         if(motos != null && !motos.isEmpty()){
 
             return motos;

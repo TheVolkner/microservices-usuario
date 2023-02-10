@@ -9,7 +9,7 @@ import java.util.List;
 //HACEMOS UNA CLASE LA CÚAL ESTARÁ ENCARGAD DE SER EL FEIGN CLIENT PARA EL SERVICIO DE CARRO
 //LE INDICAMOS UN NOMBRE Y EL PATH BASE PARA HACER LAS PETICIONES, JUNTO CON EL REQUEST MAPPING PARA
 //INDICAR EL NOMBRE DE LA API
-@FeignClient(name= "carro-service", url="http://localhost:8002", path = "/api/carro")
+@FeignClient(name= "carro-service", path = "/api/carro")
 public interface CarroFeignClient {
 
     //ESTE MÉTODO CONCATENA ESTE PATH CON EL PRINCIPAL Y MANDA A LLAMAR A ESA URL DEL SERVICIO CARRO
