@@ -1,5 +1,6 @@
 package ve.com.tps.usuarioservice.controller;
 
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -107,7 +108,10 @@ public class UsuarioController {
     }
 
     //ESTE CONTROLADOR SE COMUNICARÁ CON EL SERVICE Y CON EL REST TEMPLATE PARA SOLICITAR LOS CARROS AL SERVICIO CORRESPONDIENTE
+
+    //AGREGAMOS EL CIRCUIT BREAKER A CADA PETICIÓN DONDE LLAMEMOS A OTOR SERVICIO
     @GetMapping("/carros/{id}")
+    @CircuitBreaker(name="carrosCB", fallbackMethod = "fallbackGetCarros")
     public ResponseEntity<List<Carro>> listarCarrosPorId(@PathVariable Integer id){
 
         Usuario uFound = usuarioService.buscarUsuarioPorId(id);
@@ -126,7 +130,9 @@ public class UsuarioController {
     }
 
     //ESTE CONTROLADOR FUNCIONARÁ IGUAL QUE EL DE CARROS PARA SOLICITAR LAS MOTOS AL SERVICIO
+    //AGREGAMOS EL CIRCUIT BREAKER A CADA PETICIÓN DONDE LLAMEMOS A OTOR SERVICIO
     @GetMapping("/motos/{id}")
+    @CircuitBreaker(name="motosCB",fallbackMethod = "fallbackGetMotos")
     public ResponseEntity<List<Moto>> listarMotosPorId(@PathVariable Integer id){
 
         Usuario uFound = usuarioService.buscarUsuarioPorId(id);
@@ -145,7 +151,9 @@ public class UsuarioController {
     }
 
     //GUARDAR UN CARRO SEGÚN EL ID DEL USUARIO
+    //AGREGAMOS EL CIRCUIT BREAKER A CADA PETICIÓN DONDE LLAMEMOS A OTOR SERVICIO
     @PostMapping("/carro/agregar/{id}")
+    @CircuitBreaker(name="carrosCB", fallbackMethod = "fallbackSaveCarro")
     public ResponseEntity<Carro> guardarCarro(@PathVariable Integer id, @RequestBody Carro c){
 
             Carro cSaved = usuarioService.guardarCarro(c,id);
@@ -161,7 +169,9 @@ public class UsuarioController {
     }
 
     //GUARDAR UNA MOTO SEGÚN EL ID DEL USUARIO
+    //AGREGAMOS EL CIRCUIT BREAKER A CADA PETICIÓN DONDE LLAMEMOS A OTOR SERVICIO
     @PostMapping("/moto/agregar/{id}")
+    @CircuitBreaker(name="motosCB",fallbackMethod = "fallbackSaveMoto")
     public ResponseEntity<Moto> guardarMoto(@PathVariable Integer id, @RequestBody Moto m){
 
         Moto mSaved = usuarioService.guardarMoto(m,id);
@@ -176,7 +186,9 @@ public class UsuarioController {
 
     }
 
+    //AGREGAMOS EL CIRCUIT BREAKER A CADA PETICIÓN DONDE LLAMEMOS A OTOR SERVICIO
     @GetMapping("/vehiculos/{id}")
+    @CircuitBreaker(name="vehiculosCB",fallbackMethod = "fallbackGetVehiculos")
     public ResponseEntity<Map<String, Object>> listarVehiculosDelUsuario(@PathVariable Integer id){
 
         Map<String,Object> datos = usuarioService.obtenerUsuarioYVehiculos(id);
@@ -188,6 +200,43 @@ public class UsuarioController {
 
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+    }
+
+    //---MÉTODOS PARA TOLERANCIA DE FALLOS LLAMADOS POR EL CIRCUIT BREAKER AL HABER UN ERROR EN ALGÚNO DE LOS SERVICIOS LLAMADOS---
+
+    //ERROR EN EL MÉTODO listarCarrosPorId
+    private ResponseEntity<?> fallbackGetCarros(@PathVariable Integer id,RuntimeException ex){
+
+     return new ResponseEntity<>("¡El usuario: " + id +" tiene sus carros en el taller!", HttpStatus.OK );
+
+    }
+
+    //ERROR EN EL MÉTODO guardarCarro
+    private ResponseEntity<?> fallbackSaveCarro(@PathVariable Integer id,@RequestBody Carro c, RuntimeException ex){
+
+        return new ResponseEntity<>("¡El usuario: " + id +" no tiene más espacio en su garaje para otro carro!", HttpStatus.OK );
+
+    }
+
+    //ERROR EN EL MÉTODO listarMotosPorId
+    private ResponseEntity<?> fallbackGetMotos(@PathVariable Integer id,RuntimeException ex){
+
+        return new ResponseEntity<>("¡El usuario: " + id +" tiene sus motos en el taller!", HttpStatus.OK );
+
+    }
+
+    //ERROR EN EL MÉTODO guardarMoto
+    private ResponseEntity<?> fallbackSaveMoto(@PathVariable Integer id,@RequestBody Moto m,RuntimeException ex){
+
+        return new ResponseEntity<>("¡El usuario: " + id +" no tiene más espacio en us garaje para otra moto!", HttpStatus.OK );
+
+    }
+
+    //ERROR EN EL MÉTODO listarVehiculosDelUsuario
+    private ResponseEntity<?> fallbackGetVehiculos(@PathVariable Integer id,RuntimeException ex){
+
+        return new ResponseEntity<>("¡El usuario: " + id +" dejó todos sus vehículos resguardados en su taller!", HttpStatus.OK );
+
     }
 
 
