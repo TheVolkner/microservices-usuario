@@ -5,3 +5,8 @@ spring:
       uri: http://localhost:8081
   application:
     name: usuario-service
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:9000/realms/tutorial-realm
