@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ve.com.tps.authservice.dto.AuthUserDTO;
+import ve.com.tps.authservice.dto.NewAuthUserDTO;
 import ve.com.tps.authservice.dto.RequestDTO;
 import ve.com.tps.authservice.dto.TokenDTO;
 import ve.com.tps.authservice.entity.AuthUser;
@@ -20,7 +21,7 @@ public class AuthServiceController {
     private AuthUserService authUserService;
 
     @PostMapping("/create")
-    public ResponseEntity<AuthUser> create(@RequestBody AuthUserDTO authUserDTO){
+    public ResponseEntity<AuthUser> create(@RequestBody NewAuthUserDTO authUserDTO){
 
         AuthUser user = authUserService.save(authUserDTO);
 

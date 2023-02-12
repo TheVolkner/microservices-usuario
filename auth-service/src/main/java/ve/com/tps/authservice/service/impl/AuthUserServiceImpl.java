@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ve.com.tps.authservice.dto.AuthUserDTO;
+import ve.com.tps.authservice.dto.NewAuthUserDTO;
 import ve.com.tps.authservice.dto.RequestDTO;
 import ve.com.tps.authservice.dto.TokenDTO;
 import ve.com.tps.authservice.entity.AuthUser;
@@ -31,7 +32,7 @@ public class AuthUserServiceImpl implements AuthUserService {
 
     //GUARDAMOS UN USUARIO EN LA BBDD
     @Override
-    public AuthUser save(AuthUserDTO dto) {
+    public AuthUser save(NewAuthUserDTO dto) {
 
         //COMPROBAMOS QUE NO  EXISTE UN USUARIO YA CON EL USERNAME INDICADO
         Optional<AuthUser> authUserOptional = authUserRepository.findByUsername(dto.getUsername());
@@ -43,6 +44,7 @@ public class AuthUserServiceImpl implements AuthUserService {
                     .builder()
                     .username(dto.getUsername())
                     .password(passwordEncoder.encode(dto.getPassword()))
+                    .role(dto.getRole())
                     .build();
             return authUserRepository.save(user);
         } else {
