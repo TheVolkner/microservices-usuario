@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import ve.com.tps.authservice.dto.AuthUserDTO;
+import ve.com.tps.authservice.dto.RequestDTO;
 import ve.com.tps.authservice.dto.TokenDTO;
 import ve.com.tps.authservice.entity.AuthUser;
 import ve.com.tps.authservice.repository.AuthUserRepository;
@@ -80,10 +81,10 @@ public class AuthUserServiceImpl implements AuthUserService {
 
     //VALIDAMOS EL TOKEN
     @Override
-    public boolean validate(String token) {
+    public boolean validate(String token, RequestDTO requestDTO) {
 
         //COMPROBAMOS SI EL TOKEN JWT ES VÁLIDO EN LA SESIÓN
-        if(jwtProvider.validate(token)){
+        if(jwtProvider.validate(token,requestDTO)){
 
            String username = jwtProvider.getUsernameFromToken(token);
 

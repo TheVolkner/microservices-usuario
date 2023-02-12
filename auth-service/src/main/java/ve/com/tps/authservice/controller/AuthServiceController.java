@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ve.com.tps.authservice.dto.AuthUserDTO;
+import ve.com.tps.authservice.dto.RequestDTO;
 import ve.com.tps.authservice.dto.TokenDTO;
 import ve.com.tps.authservice.entity.AuthUser;
 import ve.com.tps.authservice.service.AuthUserService;
@@ -45,9 +46,9 @@ public class AuthServiceController {
     }
 
     @PostMapping("/validate/{token}")
-    public ResponseEntity<TokenDTO> validate(@PathVariable String token){
+    public ResponseEntity<TokenDTO> validate(@PathVariable String token, RequestDTO requestDTO){
 
-       if(authUserService.validate(token)){
+       if(authUserService.validate(token,requestDTO)){
 
            return new ResponseEntity<>(new TokenDTO(token),HttpStatus.OK);
        } else {
