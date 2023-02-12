@@ -2,6 +2,7 @@ package ve.com.tps.authservice.security;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 import ve.com.tps.authservice.dto.RequestDTO;
@@ -14,6 +15,7 @@ import java.util.regex.Pattern;
 @Getter
 @Setter
 @ConfigurationProperties(prefix = "admin-paths")
+@Slf4j
 public class RouteValidator {
 
     //CREAMOS UNA LISTA CON LOS PATHS
@@ -21,6 +23,8 @@ public class RouteValidator {
 
     //EN ESTE MÉTODO COMPROBAMOS QUE LA PETICIÓN COINCIDA CON UNA DE LAS PETICIONES DE LA LISTA
     public boolean isAdminPath(RequestDTO dto){
+
+        log.info("Lista admins valor1: " +  paths.get(0));
 
         return paths.stream().anyMatch(p ->
                 Pattern.matches(p.getUri(),dto.getUri()) && p.getMethod().equals(dto.getMethod()));

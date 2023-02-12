@@ -2,6 +2,7 @@ package ve.com.tps.authservice.controller;
 
 import antlr.Token;
 import com.netflix.discovery.converters.Auto;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,7 @@ import ve.com.tps.authservice.service.AuthUserService;
 
 @RestController
 @RequestMapping("api/auth")
+@Slf4j
 public class AuthServiceController {
 
     @Autowired
@@ -48,6 +50,10 @@ public class AuthServiceController {
 
     @PostMapping("/validate/{token}")
     public ResponseEntity<TokenDTO> validate(@PathVariable String token, RequestDTO requestDTO){
+
+        log.info("Token: " + token);
+
+        log.info("RequestDTO: " + requestDTO.getUri() + ", " + requestDTO.getMethod());
 
        if(authUserService.validate(token,requestDTO)){
 

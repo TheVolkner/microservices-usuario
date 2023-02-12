@@ -1,6 +1,7 @@
 package ve.com.tps.gatewayservice.config;
 
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
 import org.springframework.http.HttpHeaders;
@@ -14,6 +15,7 @@ import ve.com.tps.gatewayservice.dto.RequestDTO;
 import ve.com.tps.gatewayservice.dto.TokenDTO;
 
 @Component
+@Slf4j
 public class AuthFilter extends AbstractGatewayFilterFactory<AuthFilter.Config> {
 
     private WebClient.Builder webClient;
@@ -24,6 +26,7 @@ public class AuthFilter extends AbstractGatewayFilterFactory<AuthFilter.Config> 
     }
     @Override
     public GatewayFilter apply(Config config) {
+        log.info("ENTRANDO A GATEWAY FILTER");
         return (((exchange, chain) -> {
             if(!exchange.getRequest().getHeaders().containsKey(HttpHeaders.AUTHORIZATION))
                 return onError(exchange, HttpStatus.BAD_REQUEST);
