@@ -5,10 +5,7 @@ import com.netflix.discovery.converters.Auto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ve.com.tps.authservice.dto.AuthUserDTO;
 import ve.com.tps.authservice.dto.TokenDTO;
 import ve.com.tps.authservice.entity.AuthUser;
@@ -47,12 +44,12 @@ public class AuthServiceController {
          }
     }
 
-    @PostMapping("/validate")
-    public ResponseEntity<TokenDTO> validate(@RequestBody TokenDTO token){
+    @PostMapping("/validate/{token}")
+    public ResponseEntity<TokenDTO> validate(@PathVariable String token){
 
        if(authUserService.validate(token)){
 
-           return new ResponseEntity<>(token,HttpStatus.OK);
+           return new ResponseEntity<>(new TokenDTO(token),HttpStatus.OK);
        } else {
            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
        }

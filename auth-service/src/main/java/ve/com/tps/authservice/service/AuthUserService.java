@@ -10,6 +10,6 @@ public interface AuthUserService {
 
     TokenDTO login(AuthUserDTO dto);
 
-    boolean validate(TokenDTO dto);
+    boolean validate(String token);
 
 }

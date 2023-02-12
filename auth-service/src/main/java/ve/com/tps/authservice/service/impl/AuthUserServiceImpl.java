@@ -38,11 +38,10 @@ public class AuthUserServiceImpl implements AuthUserService {
         //SI NO HAY UN USUARIO CON ESE USERNAME, PROCEDEMOS
         if (authUserOptional.isEmpty()) {
 
-            String password = passwordEncoder.encode(dto.getPassword());
             AuthUser user = AuthUser
                     .builder()
                     .username(dto.getUsername())
-                    .password(dto.getPassword())
+                    .password(passwordEncoder.encode(dto.getPassword()))
                     .build();
             return authUserRepository.save(user);
         } else {
@@ -81,12 +80,12 @@ public class AuthUserServiceImpl implements AuthUserService {
 
     //VALIDAMOS EL TOKEN
     @Override
-    public boolean validate(TokenDTO token) {
+    public boolean validate(String token) {
 
         //COMPROBAMOS SI EL TOKEN JWT ES VÁLIDO EN LA SESIÓN
-        if(jwtProvider.validate(token.getToken())){
+        if(jwtProvider.validate(token)){
 
-           String username = jwtProvider.getUsernameFromToken(token.getToken());
+           String username = jwtProvider.getUsernameFromToken(token);
 
            //COMPROBAMOS QUE EL USUARIO EL CÚAL TIENE EL TOKEN ASIGNADO EXISTE
            if(authUserRepository.findByUsername(username).isPresent()){
