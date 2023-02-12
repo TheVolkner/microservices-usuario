@@ -1,6 +1,12 @@
 package ve.com.tps.usuarioservice.services.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import ve.com.tps.usuarioservice.entities.Usuario;
@@ -11,6 +17,7 @@ import ve.com.tps.usuarioservice.models.Moto;
 import ve.com.tps.usuarioservice.repository.UsuarioRepository;
 import ve.com.tps.usuarioservice.services.UsuarioService;
 
+import javax.ws.rs.core.SecurityContext;
 import java.util.*;
 
 @Service
@@ -66,15 +73,16 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     //UTILIZAMOS EL FEIGN CLIENT PARA LISTAR LOS CARROS DEL USUARIO SEGÚN SU ID
     @Override
-    public List<Carro> listarCarros(Integer id) {
-        List<Carro> carros = carroFeignClient.listarCarros(id);
-        if(carros != null && !carros.isEmpty()){
+    public List listarCarros(Integer id) {
+        //AL SER ESTE EL SERVICIO PRINCIPAL EL CUAL LLAMA A LOS OTROS SERVICIOS,DEBE ENVIAR EL TOKEN AUTORIZADO PARA
+        //SOLICITAR DATOS A LOS SERVICIOS ESPECIFICADOS, CON AYUDA DE REST TEMPLATE SE GENERA EL TOKEN OBTENIDO DEL CONTEXTO DE SEGURIDAD
+        //Y SE ENVÍA JUNTO CON LA PETICIÓN COMO UN HEADER
+        Jwt jwt = (Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + jwt.getTokenValue());
+        ResponseEntity<List> carros = restTemplate.exchange("http://carro-service/api/carro/usuario/" + id.toString(), HttpMethod.GET,new HttpEntity<>(headers), List.class);
+        return carros.getBody();
 
-            return carros;
-        } else {
-
-            return new ArrayList<>();
-        }
     }
 
     //AGREGAMOS UN CARRO HACIENDO USO DE FEIGN CLIENT
@@ -96,15 +104,16 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     //UTILIZAMOS FEIGN CLIENT PARA LISTAR LAS MOTOS
     @Override
-    public List<Moto> listarMotos(Integer id) {
-        List<Moto> motos = motoFeignClient.listarMotos(id);
-        if(motos != null && !motos.isEmpty()){
+    public List listarMotos(Integer id) {
+        //AL SER ESTE EL SERVICIO PRINCIPAL EL CUAL LLAMA A LOS OTROS SERVICIOS,DEBE ENVIAR EL TOKEN AUTORIZADO PARA
+        //SOLICITAR DATOS A LOS SERVICIOS ESPECIFICADOS, CON AYUDA DE REST TEMPLATE SE GENERA EL TOKEN OBTENIDO DEL CONTEXTO DE SEGURIDAD
+        //Y SE ENVÍA JUNTO CON LA PETICIÓN COMO UN HEADER
+        Jwt jwt = (Jwt) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + jwt.getTokenValue());
+        ResponseEntity<List> motos = restTemplate.exchange("http://moto-service/api/moto/usuario/" + id.toString(),HttpMethod.GET,new HttpEntity<>(headers), List.class);
+        return motos.getBody();
 
-            return motos;
-        } else {
-
-            return new ArrayList<>();
-        }
     }
 
     //GUARDAMOS UNA MOTO CON EL FEIGN CLIENT LLAMANDO AL MOTO-SERVICE SEGUN EL ID DEL USUARIO
