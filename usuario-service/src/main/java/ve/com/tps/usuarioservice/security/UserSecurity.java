@@ -1,29 +1,21 @@
 package ve.com.tps.usuarioservice.security;
 
-import org.springframework.context.annotation.Bean;
+
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+
 
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-public class UserSecurity{
-
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        //PERMITE TODAS LAS PETICIONES DE UN USUARIO AUTENTICADO Y LE MANDA AL OAUTH2 RESOURCE SERVER
-        //EL TOKEN JWT.
-        http
-                .authorizeRequests()
-                .anyRequest()
-                .authenticated()
+public class UserSecurity extends WebSecurityConfigurerAdapter {
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http.authorizeRequests().anyRequest().authenticated()
                 .and()
-                .oauth2ResourceServer()
-                .jwt();
-        return http.build();
+                .oauth2ResourceServer().jwt();
     }
-
 }
